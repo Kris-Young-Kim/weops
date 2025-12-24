@@ -44,15 +44,15 @@
 ### 환경 변수 설정
 
 - [x] `.env.local` 파일 생성 (템플릿 제공)
-- [x] Neon `DATABASE_URL` 설정 (가이드 문서화)
+- [x] Neon `DATABASE_URL` 설정 ✅ **완료: .env.local에 설정됨**
 - [x] Neon `DATABASE_POOL_URL` 설정 (프로덕션용, 가이드 문서화)
-- [x] Clerk 인증 키 설정 (가이드 문서화)
+- [x] Clerk 인증 키 설정 ✅ **완료: .env.local에 설정됨**
 - [x] `.env.example` 파일 생성
 - [x] 환경 변수 설정 가이드 문서 작성 (`docs/ENV_SETUP.md`)
 
 ### 데이터베이스 설정 (Neon + Drizzle)
 
-- [ ] Neon 프로젝트 생성 및 연결 확인 ⚠️ **필요: Neon 프로젝트 생성 후 DATABASE_URL 설정**
+- [x] Neon 프로젝트 생성 및 연결 확인 ✅ **완료: .env.local에 DATABASE_URL 설정됨**
 - [x] Drizzle ORM 패키지 설치 (`drizzle-orm`, `drizzle-kit`, `postgres`)
 - [x] `drizzle.config.ts` 파일 생성
 - [x] `src/db/index.ts` - DB 연결 설정 (Connection Pooling 포함)
@@ -66,22 +66,36 @@
   - [x] `order_items` 테이블
 - [x] 초기 마이그레이션 생성 및 적용 (`pnpm db:push` 완료 - 스키마 동기화됨) ✅ **완료: 모든 테이블 생성 완료**
 - [x] 인덱스 생성 (성능 최적화) - 스키마에 이미 정의됨
+- [x] 데이터베이스 관리 가이드 문서 작성 ✅ **완료: `docs/WeOps-데이터베이스-관리-가이드.md` 생성**
+  - [x] 절대 수정 금지 테이블 정의
+  - [x] 제한적 수정 가능 테이블 정의 (products)
+  - [x] 운영자 체크리스트 작성
+  - [x] 정규화 원칙 적용 확인 (배열 데이터 없음, 1:N 관계 명시적 관리)
+  - [x] 참고 문서 링크 추가
 
 ### 인증 및 멀티테넌시 (Clerk)
 
-- [ ] Clerk 프로젝트 생성 및 설정
-- [ ] Clerk Provider 설정 (`app/layout.tsx`)
-- [ ] 인증 페이지 생성
-  - [ ] `app/(auth)/sign-in/[[...sign-in]]/page.tsx`
-  - [ ] `app/(auth)/sign-up/[[...sign-up]]/page.tsx`
-  - [ ] `app/(auth)/layout.tsx`
-- [ ] Clerk 미들웨어 설정 (`middleware.ts` 또는 `proxy.ts`)
-- [ ] 사용자 동기화 로직 구현
-  - [ ] `hooks/use-sync-user.ts` - Clerk → Neon 사용자 동기화 훅
-  - [ ] `components/providers/sync-user-provider.tsx` - 자동 동기화 프로바이더
-  - [ ] `app/api/sync-user/route.ts` - 동기화 API 라우트
-- [ ] `src/lib/utils/get-user-org.ts` - clerk_user_id로 org_id 조회 유틸리티 함수
-- [ ] Organization(사업소) 격리 로직 구현
+- [x] Clerk 프로젝트 생성 및 설정 ✅ **완료: .env.local에 API 키 설정됨**
+- [x] Clerk Provider 설정 (`app/layout.tsx`) ✅ **완료**
+- [x] 인증 페이지 생성 ✅ **완료**
+  - [x] `app/(auth)/sign-in/[[...sign-in]]/page.tsx`
+  - [x] `app/(auth)/sign-up/[[...sign-up]]/page.tsx`
+  - [x] `app/(auth)/layout.tsx`
+- [x] Clerk 미들웨어 설정 (`proxy.ts`) ✅ **완료**
+- [x] 사용자 동기화 로직 구현 ✅ **완료**
+  - [x] `hooks/use-sync-user.ts` - Clerk → Neon 사용자 동기화 훅
+  - [x] `components/providers/sync-user-provider.tsx` - 자동 동기화 프로바이더
+  - [x] `app/api/sync-user/route.ts` - 동기화 API 라우트
+- [x] `lib/utils/get-user-org.ts` - clerk_user_id로 org_id 조회 유틸리티 함수 ✅ **완료**
+- [x] Organization(사업소) 격리 로직 구현 ✅ **완료**
+  - [x] `actions/auth.ts` - `requireOrgId()` 함수 구현
+  - [x] 모든 Server Actions에 org_id 필터링 적용
+    - [x] `actions/recipients.ts` ✅
+    - [x] `actions/orders.ts` ✅
+    - [x] `actions/assets.ts` ✅
+    - [x] `actions/stats.ts` ✅
+  - [x] `lib/utils/org-isolation.ts` - 추가 헬퍼 함수 생성
+  - [x] Organization 격리 로직 가이드 문서 작성 (`docs/ORGANIZATION-ISOLATION-GUIDE.md`)
 
 ### 기본 레이아웃
 
@@ -394,6 +408,8 @@
 - [NEON_GUIDE.md](./NEON_GUIDE.md) - Neon 데이터베이스 사용 가이드
 - [Mermaid.md](./Mermaid.md) - ERD 및 시스템 아키텍처
 - [TRD.md](./TRD.md) - 기술 요구사항 문서
+- [WeOps-데이터베이스-관리-가이드.md](./WeOps-데이터베이스-관리-가이드.md) - 데이터베이스 관리 원칙 및 운영 가이드
+- [ORGANIZATION-ISOLATION-GUIDE.md](./ORGANIZATION-ISOLATION-GUIDE.md) - Organization(사업소) 격리 로직 구현 가이드
 
 ---
 

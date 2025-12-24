@@ -10,6 +10,18 @@
  * - Clerk 연동: users.clerk_user_id로 인증 시스템 연동
  * - WeGuard: orders 테이블의 금액 계산 필드 (total_amount, copay_amount, claim_amount)
  * - WeStock: assets 테이블의 상태 머신 (AVAILABLE → RENTED → RETURNING → SANITIZING)
+ * - 정규화: 배열 데이터 없음, 모든 관계가 FK로 명시적 관리 (1:N 관계)
+ *
+ * 데이터베이스 관리 원칙:
+ * - 절대 수정 금지 테이블: users, organizations, recipients, orders, order_items, assets
+ * - 제한적 수정 가능 테이블: products (제품 마스터, 단 PK/FK 제외)
+ * - 모든 데이터 수정은 애플리케이션 API를 통해서만 수행
+ * - 대량 수정은 마이그레이션 스크립트 사용
+ *
+ * @see {@link docs/WeOps-데이터베이스-관리-가이드.md} - 데이터베이스 관리 가이드
+ * @see {@link docs/database-maintenance-guide.md} - 상세한 관리 원칙
+ * @see {@link docs/database-normalization-guide.md} - 정규화 가이드
+ * @see {@link docs/비개발자-데이터관리-가이드.md} - 비개발자용 가이드
  *
  * @dependencies
  * - drizzle-orm: Type-safe ORM
