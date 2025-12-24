@@ -43,11 +43,12 @@
 
 ### 환경 변수 설정
 
-- [ ] `.env.local` 파일 생성
-- [ ] Neon `DATABASE_URL` 설정
-- [ ] Neon `DATABASE_POOL_URL` 설정 (프로덕션용)
-- [ ] Clerk 인증 키 설정
-- [ ] `.env.example` 파일 생성
+- [x] `.env.local` 파일 생성 (템플릿 제공)
+- [x] Neon `DATABASE_URL` 설정 (가이드 문서화)
+- [x] Neon `DATABASE_POOL_URL` 설정 (프로덕션용, 가이드 문서화)
+- [x] Clerk 인증 키 설정 (가이드 문서화)
+- [x] `.env.example` 파일 생성
+- [x] 환경 변수 설정 가이드 문서 작성 (`docs/ENV_SETUP.md`)
 
 ### 데이터베이스 설정 (Neon + Drizzle)
 

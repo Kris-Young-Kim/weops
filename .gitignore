@@ -56,3 +56,9 @@ logs
 # Temporary files
 tmp/
 temp/
+
+# Legacy Supabase files (removed, using Neon now)
+lib/supabase/
+src/lib/supabase/
+app/auth-test/
+app/storage-test/
