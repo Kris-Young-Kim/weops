@@ -52,20 +52,20 @@
 
 ### 데이터베이스 설정 (Neon + Drizzle)
 
-- [ ] Neon 프로젝트 생성 및 연결 확인
-- [ ] Drizzle ORM 패키지 설치 (`drizzle-orm`, `drizzle-kit`, `postgres`)
-- [ ] `drizzle.config.ts` 파일 생성
-- [ ] `src/db/index.ts` - DB 연결 설정 (Connection Pooling 포함)
-- [ ] `src/db/schema.ts` - 데이터베이스 스키마 정의
-  - [ ] `organizations` 테이블
-  - [ ] `users` 테이블 (clerk_user_id 포함)
-  - [ ] `recipients` 테이블
-  - [ ] `products` 테이블
-  - [ ] `assets` 테이블
-  - [ ] `orders` 테이블
-  - [ ] `order_items` 테이블
-- [ ] 초기 마이그레이션 생성 및 적용 (`pnpm db:generate`, `pnpm db:migrate`)
-- [ ] 인덱스 생성 (성능 최적화)
+- [ ] Neon 프로젝트 생성 및 연결 확인 ⚠️ **필요: Neon 프로젝트 생성 후 DATABASE_URL 설정**
+- [x] Drizzle ORM 패키지 설치 (`drizzle-orm`, `drizzle-kit`, `postgres`)
+- [x] `drizzle.config.ts` 파일 생성
+- [x] `src/db/index.ts` - DB 연결 설정 (Connection Pooling 포함)
+- [x] `src/db/schema.ts` - 데이터베이스 스키마 정의
+  - [x] `organizations` 테이블
+  - [x] `users` 테이블 (clerk_user_id 포함)
+  - [x] `recipients` 테이블
+  - [x] `products` 테이블
+  - [x] `assets` 테이블
+  - [x] `orders` 테이블
+  - [x] `order_items` 테이블
+- [x] 초기 마이그레이션 생성 및 적용 (`pnpm db:push` 완료 - 스키마 동기화됨) ✅ **완료: 모든 테이블 생성 완료**
+- [x] 인덱스 생성 (성능 최적화) - 스키마에 이미 정의됨
 
 ### 인증 및 멀티테넌시 (Clerk)
 
