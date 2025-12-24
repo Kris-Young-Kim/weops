@@ -15,7 +15,7 @@
 import { db, assets, products, recipients } from "@/src/db";
 import { eq, and, desc, like, or } from "drizzle-orm";
 import { requireOrgId } from "./auth";
-import type { Asset, AssetStatus, NewAsset } from "@/src/db/schema";
+import type { AssetStatus, NewAsset } from "@/src/db/schema";
 
 /**
  * 현재 사업소의 모든 자산을 조회합니다.
@@ -34,7 +34,25 @@ export async function getAssets(options?: {
     const orgId = await requireOrgId();
     console.log("Current orgId:", orgId);
 
-    let query = db
+    // 조건 배열 구성
+    const conditions = [eq(assets.orgId, orgId)];
+    
+    if (options?.status) {
+      conditions.push(eq(assets.status, options.status));
+    }
+    
+    if (options?.search) {
+      const searchPattern = `%${options.search}%`;
+      conditions.push(
+        or(
+          like(products.name, searchPattern),
+          like(assets.serialNumber, searchPattern),
+          like(assets.qrCode, searchPattern)
+        )!
+      );
+    }
+
+    const baseQuery = db
       .select({
         id: assets.id,
         orgId: assets.orgId,
@@ -55,36 +73,12 @@ export async function getAssets(options?: {
       .from(assets)
       .leftJoin(products, eq(assets.productId, products.id))
       .leftJoin(recipients, eq(assets.currentRecipientId, recipients.id))
-      .where(eq(assets.orgId, orgId));
-
-    // 상태 필터
-    if (options?.status) {
-      query = query.where(and(eq(assets.orgId, orgId), eq(assets.status, options.status)));
-    }
-
-    // 검색 필터 (제품명, 시리얼번호, QR코드)
-    if (options?.search) {
-      const searchPattern = `%${options.search}%`;
-      query = query.where(
-        and(
-          eq(assets.orgId, orgId),
-          or(
-            like(products.name, searchPattern),
-            like(assets.serialNumber, searchPattern),
-            like(assets.qrCode, searchPattern)
-          )
-        )
-      );
-    }
-
-    // 정렬 및 제한
-    query = query.orderBy(desc(assets.updatedAt));
+      .where(and(...conditions))
+      .orderBy(desc(assets.updatedAt));
     
-    if (options?.limit) {
-      query = query.limit(options.limit);
-    }
-
-    const result = await query;
+    const result = options?.limit 
+      ? await baseQuery.limit(options.limit)
+      : await baseQuery;
     console.log(`Found ${result.length} assets`);
     console.groupEnd();
     

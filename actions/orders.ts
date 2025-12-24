@@ -138,17 +138,17 @@ export async function createOrder(
     }
 
     // WeGuard: 한도 초과 확인
-    const totalAmount = orderData.totalAmount;
     const copayAmount = orderData.copayAmount;
+    const currentLimitBalance = recipient.limitBalance ?? 1600000; // 기본값 160만원
     
-    if (recipient.limitBalance < copayAmount) {
+    if (currentLimitBalance < copayAmount) {
       throw new Error(
-        `한도 초과: 잔여 한도 ${recipient.limitBalance.toLocaleString()}원, 필요 금액 ${copayAmount.toLocaleString()}원`
+        `한도 초과: 잔여 한도 ${currentLimitBalance.toLocaleString()}원, 필요 금액 ${copayAmount.toLocaleString()}원`
       );
     }
 
     console.log("WeGuard check passed");
-    console.log(`Remaining limit: ${recipient.limitBalance - copayAmount}`);
+    console.log(`Remaining limit: ${currentLimitBalance - copayAmount}`);
 
     // 트랜잭션으로 주문 생성 및 한도 차감
     const [newOrder] = await db
@@ -172,7 +172,7 @@ export async function createOrder(
     await db
       .update(recipients)
       .set({
-        limitBalance: recipient.limitBalance - copayAmount,
+        limitBalance: currentLimitBalance - copayAmount,
       })
       .where(eq(recipients.id, recipient.id));
 

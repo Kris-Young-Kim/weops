@@ -12,9 +12,7 @@
 "use server";
 
 import { db, products } from "@/src/db";
-import { eq, like, or, desc } from "drizzle-orm";
-import type { Product, NewProduct } from "@/src/db/schema";
-
+import { eq, like, or, desc, and } from "drizzle-orm";
 /**
  * 모든 제품을 조회합니다.
  * @param options 검색 옵션
@@ -29,33 +27,33 @@ export async function getProducts(options?: {
   console.log("Options:", options);
   
   try {
-    let query = db.select().from(products);
-
-    // 검색 필터 (제품명, 코드, 카테고리)
+    // 조건 배열 구성
+    const conditions: ReturnType<typeof like>[] = [];
+    
     if (options?.search) {
       const searchPattern = `%${options.search}%`;
-      query = query.where(
+      conditions.push(
         or(
           like(products.name, searchPattern),
           like(products.code, searchPattern),
           like(products.category || "", searchPattern)
-        )
+        )!
       );
     }
-
-    // 카테고리 필터
-    if (options?.category) {
-      query = query.where(like(products.category || "", `%${options.category}%`));
-    }
-
-    // 정렬 및 제한
-    query = query.orderBy(desc(products.name));
     
-    if (options?.limit) {
-      query = query.limit(options.limit);
+    if (options?.category) {
+      conditions.push(like(products.category || "", `%${options.category}%`)!);
     }
 
-    const result = await query;
+    const baseQuery = db
+      .select()
+      .from(products)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(products.name));
+    
+    const result = options?.limit 
+      ? await baseQuery.limit(options.limit)
+      : await baseQuery;
     console.log(`Found ${result.length} products`);
     console.groupEnd();
     

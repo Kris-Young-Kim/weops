@@ -57,20 +57,26 @@ const inventoryData = [
   },
 ]
 
-const statusConfig = {
+type StatusKey = "available" | "rented" | "maintenance";
+
+const statusConfig: Record<StatusKey, { 
+  label: string; 
+  variant: "default" | "secondary" | "outline";
+  className: string;
+}> = {
   available: { 
     label: "대여 가능", 
-    variant: "default" as const,
+    variant: "default",
     className: "bg-teal-600 text-white hover:bg-teal-700 border-teal-600",
   },
   rented: { 
     label: "대여 중", 
-    variant: "secondary" as const,
+    variant: "secondary",
     className: "bg-blue-600 text-white hover:bg-blue-700 border-blue-600",
   },
   maintenance: { 
     label: "소독 대기", 
-    variant: "outline" as const,
+    variant: "outline",
     className: "border-amber-500 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950",
   },
 }
@@ -103,10 +109,10 @@ export function InventoryTable() {
                 <TableCell className="font-mono text-sm text-muted-foreground">{item.serialNumber}</TableCell>
                 <TableCell>
                   <Badge 
-                    variant={statusConfig[item.status].variant}
-                    className={statusConfig[item.status].className}
+                    variant={statusConfig[item.status as StatusKey].variant}
+                    className={statusConfig[item.status as StatusKey].className}
                   >
-                    {statusConfig[item.status].label}
+                    {statusConfig[item.status as StatusKey].label}
                   </Badge>
                 </TableCell>
                 <TableCell>{item.location}</TableCell>

@@ -37,7 +37,12 @@ const recentOrders = [
   },
 ]
 
-const statusLabels = {
+type OrderStatus = "completed" | "pending";
+
+const statusLabels: Record<OrderStatus, { 
+  label: string;
+  className: string;
+}> = {
   completed: { 
     label: "완료",
     className: "bg-teal-600 text-white hover:bg-teal-700",
@@ -68,9 +73,9 @@ export function RecentOrders() {
                   <p className="text-xs text-muted-foreground">{order.date}</p>
                   <Badge 
                     variant={order.status === "completed" ? "default" : "secondary"} 
-                    className={cn("text-xs", statusLabels[order.status].className)}
+                    className={cn("text-xs", statusLabels[order.status as OrderStatus].className)}
                   >
-                    {statusLabels[order.status].label}
+                    {statusLabels[order.status as OrderStatus].label}
                   </Badge>
                 </div>
               </div>

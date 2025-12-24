@@ -24,7 +24,6 @@ import {
   numeric,
   timestamp,
   date,
-  boolean,
   index,
   uniqueIndex,
   check,

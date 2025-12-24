@@ -15,7 +15,7 @@
 import { db, recipients } from "@/src/db";
 import { eq, and, like, or, desc } from "drizzle-orm";
 import { requireOrgId } from "./auth";
-import type { Recipient, NewRecipient } from "@/src/db/schema";
+import type { NewRecipient } from "@/src/db/schema";
 
 /**
  * 현재 사업소의 모든 수급자를 조회합니다.
@@ -32,33 +32,28 @@ export async function getRecipients(options?: {
   try {
     const orgId = await requireOrgId();
 
-    let query = db
-      .select()
-      .from(recipients)
-      .where(eq(recipients.orgId, orgId));
-
-    // 검색 필터 (이름, 장기요양인정번호)
+    // 조건 배열 구성
+    const conditions = [eq(recipients.orgId, orgId)];
+    
     if (options?.search) {
       const searchPattern = `%${options.search}%`;
-      query = query.where(
-        and(
-          eq(recipients.orgId, orgId),
-          or(
-            like(recipients.name, searchPattern),
-            like(recipients.ltcNumber, searchPattern)
-          )
-        )
+      conditions.push(
+        or(
+          like(recipients.name, searchPattern),
+          like(recipients.ltcNumber, searchPattern)
+        )!
       );
     }
 
-    // 정렬 및 제한
-    query = query.orderBy(desc(recipients.createdAt));
+    const baseQuery = db
+      .select()
+      .from(recipients)
+      .where(and(...conditions))
+      .orderBy(desc(recipients.createdAt));
     
-    if (options?.limit) {
-      query = query.limit(options.limit);
-    }
-
-    const result = await query;
+    const result = options?.limit 
+      ? await baseQuery.limit(options.limit)
+      : await baseQuery;
     console.log(`Found ${result.length} recipients`);
     console.groupEnd();
     

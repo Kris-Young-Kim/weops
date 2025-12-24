@@ -5,8 +5,6 @@
  * 브랜드 컬러와 스타일을 일관되게 적용하기 위한 헬퍼 함수들
  */
 
-import { brandColors } from "@/components/brand";
-
 /**
  * 상태별 브랜드 컬러 매핑
  */
